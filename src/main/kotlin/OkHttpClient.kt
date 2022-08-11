@@ -13,7 +13,12 @@ internal fun okHttpClient(
         connectionPool(ConnectionPool(ConnectionPoolConfig.maxIdleConnections, 5, TimeUnit.MINUTES))
 
         if (threadPoolExecutor != null) {
-            dispatcher(Dispatcher(threadPoolExecutor))
+            dispatcher(
+                Dispatcher(threadPoolExecutor).apply {
+                    maxRequests = OkHttpDispatcherConfig.maxParallelRequests
+                    maxRequestsPerHost = OkHttpDispatcherConfig.maxParallelRequests
+                }
+            )
         }
     }
         .build()

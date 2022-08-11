@@ -5,6 +5,10 @@ object ThreadPoolConfig {
     const val maxPoolSize = Int.MAX_VALUE
 }
 
+object OkHttpDispatcherConfig {
+    const val maxParallelRequests = 7
+}
+
 object ConnectionPoolConfig {
     const val maxIdleConnections = 3
 }
