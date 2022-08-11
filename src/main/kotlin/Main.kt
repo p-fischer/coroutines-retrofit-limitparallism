@@ -19,10 +19,9 @@ object CoroutineDispatcherConfig {
 
 fun main() {
 
-    val threadPoolExecutor = threadPoolExecutor()
-    val okHttpClient = okHttpClient(threadPoolExecutor)
-    val retrofitApi = RetrofitWebserviceApi(okHttpClient)
-    val networkApi = NetworkApi(retrofitApi)
+    val entryApi = EntryApi(okHttpClient(threadPoolExecutor()))
+    val categoryApi = CategoryApi(okHttpClient(threadPoolExecutor()))
+    val networkApi = NetworkApi(categoryApi, entryApi)
 
     runBlocking {
         coroutineScope {

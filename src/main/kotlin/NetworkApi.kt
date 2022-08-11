@@ -4,7 +4,8 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 
 internal class NetworkApi(
-    private val retrofitWebserviceApi: RetrofitWebserviceApi,
+    private val categoryApi: CategoryApi,
+    private val entryApi: EntryApi,
     private val dispatcher: CoroutineDispatcher = newFixedThreadPoolContext(
         CoroutineDispatcherConfig.ioDispatcherLimit,
         "Background Dispatcher"
@@ -20,7 +21,7 @@ internal class NetworkApi(
      */
     suspend fun getEntries(description: String) = withContext(noParallelismDispatcher) {
         println("${currentTime()} ${currentThreadInfo()} -- Network API getEntries() start")
-        retrofitWebserviceApi.getEntries(description)
+        entryApi.getEntries(description)
         println("${currentTime()} ${currentThreadInfo()} -- Network API getEntries() end")
     }
 
@@ -29,7 +30,7 @@ internal class NetworkApi(
      */
     suspend fun getCategories() = withContext(dispatcher) {
         println("${currentTime()} ${currentThreadInfo()} -- Network API getCategories() start")
-        retrofitWebserviceApi.getCategories()
+        categoryApi.getCategories()
         println("${currentTime()} ${currentThreadInfo()} -- Network API getCategories() end")
     }
 }
