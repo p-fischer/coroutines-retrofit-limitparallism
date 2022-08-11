@@ -1,18 +1,15 @@
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.newFixedThreadPoolContext
-import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
+import java.util.concurrent.ThreadPoolExecutor
 
 internal class NetworkApi(
     private val retrofitWebserviceApi: RetrofitWebserviceApi,
-    private val dispatcher: CoroutineDispatcher = newFixedThreadPoolContext(
-        CoroutineDispatcherConfig.ioDispatcherLimit,
-        "Background Dispatcher"
-    ),
+    threadPoolExecutor: ThreadPoolExecutor,
+    private val dispatcher: CoroutineDispatcher = threadPoolExecutor.asCoroutineDispatcher()
+        .limitedParallelism(CoroutineDispatcherConfig.ioDispatcherLimit),
     // A separate IO dispatcher pool so the many calls to getEntries don't block other calls
-    private val noParallelismDispatcher: CoroutineDispatcher = newSingleThreadContext(
-        "Single Thread Dispatcher"
-    ),
+    private val noParallelismDispatcher: CoroutineDispatcher = dispatcher.limitedParallelism(1),
 ) {
     /**
      * Represents an endpoint, which needs to be called with a lot of different parameters at the same time (about 1000 times).

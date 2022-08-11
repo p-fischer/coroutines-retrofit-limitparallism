@@ -22,7 +22,7 @@ fun main() {
     val threadPoolExecutor = threadPoolExecutor()
     val okHttpClient = okHttpClient(threadPoolExecutor)
     val retrofitApi = RetrofitWebserviceApi(okHttpClient)
-    val networkApi = NetworkApi(retrofitApi)
+    val networkApi = NetworkApi(retrofitApi, threadPoolExecutor)
 
     runBlocking {
         coroutineScope {
