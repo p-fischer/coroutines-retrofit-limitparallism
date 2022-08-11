@@ -19,9 +19,9 @@ internal class NetworkApi(
      * It's important these calls don't block the whole thread pool.
      */
     suspend fun getEntries(description: String) = withContext(noParallelismDispatcher) {
-        println("${currentTime()} ${currentThreadInfo()} -- Network API getEntries() start")
+        println("${currentTime()} ${currentThreadInfo()} -- Network API getEntries($description) start")
         retrofitWebserviceApi.getEntries(description)
-        println("${currentTime()} ${currentThreadInfo()} -- Network API getEntries() end")
+        println("${currentTime()} ${currentThreadInfo()} -- Network API getEntries($description) end")
     }
 
     /**
