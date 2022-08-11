@@ -27,7 +27,7 @@ fun main() {
     runBlocking {
         coroutineScope {
             launch {
-                (1..13).map { index -> async { networkApi.getEntries(index.toString()) } }.awaitAll()
+                (1..10).map { index -> async { networkApi.getEntries(index.toString()) } }.awaitAll()
             }
             launch {
                 networkApi.getCategories()
