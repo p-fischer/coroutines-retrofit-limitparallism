@@ -19,17 +19,17 @@ internal class NetworkApi(
      * It's important these calls don't block the whole thread pool.
      */
     suspend fun getEntries(description: String) = withContext(noParallelismDispatcher) {
-        println("Network API getEntries() start ${Thread.currentThread()}")
+        println("${currentTime()} ${currentThreadInfo()} -- Network API getEntries() start")
         retrofitWebserviceApi.getEntries(description)
-        println("Network API getEntries() end ${Thread.currentThread()}")
+        println("${currentTime()} ${currentThreadInfo()} -- Network API getEntries() end")
     }
 
     /**
      * This call should not be blocked by [getEntries] calls, but be executed shortly after it is called.
      */
     suspend fun getCategories() = withContext(dispatcher) {
-        println("Network API getCategories() start ${Thread.currentThread()}")
+        println("${currentTime()} ${currentThreadInfo()} -- Network API getCategories() start")
         retrofitWebserviceApi.getCategories()
-        println("Network API getCategories() end ${Thread.currentThread()}")
+        println("${currentTime()} ${currentThreadInfo()} -- Network API getCategories() end")
     }
 }

@@ -27,7 +27,6 @@ fun main() {
     runBlocking {
         coroutineScope {
             launch {
-//                println("${Thread.currentThread()}")
                 (1..13).map { index -> async { networkApi.getEntries(index.toString()) } }.awaitAll()
             }
             launch {
@@ -35,5 +34,4 @@ fun main() {
             }
         }
     }
-    println("Finished")
 }

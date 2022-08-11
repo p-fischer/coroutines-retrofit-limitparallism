@@ -37,11 +37,3 @@ class LoggingInterceptor : Interceptor {
         return response
     }
 }
-
-fun currentTime(): String =
-    localTimeFormat.format(Clock.systemUTC().instant().atZone(ZoneId.systemDefault()).toLocalTime())
-
-val localTimeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
-
-private fun currentThreadInfo() = Thread.currentThread().info()
-fun Thread.info(): String = "Thread[id=$id]"
