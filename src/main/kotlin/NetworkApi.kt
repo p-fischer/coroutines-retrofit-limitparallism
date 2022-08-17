@@ -1,12 +1,10 @@
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.concurrent.ThreadPoolExecutor
 
 internal class NetworkApi(
     private val retrofitWebserviceApi: RetrofitWebserviceApi,
-    threadPoolExecutor: ThreadPoolExecutor,
-    private val dispatcher: CoroutineDispatcher = threadPoolExecutor.asCoroutineDispatcher()
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
         .limitedParallelism(CoroutineDispatcherConfig.ioDispatcherLimit),
     // A separate IO dispatcher pool so the many calls to getEntries don't block other calls
     private val noParallelismDispatcher: CoroutineDispatcher = dispatcher.limitedParallelism(1),
@@ -17,7 +15,7 @@ internal class NetworkApi(
      */
     suspend fun getEntries(description: String) = withContext(noParallelismDispatcher) {
         println("${currentTime()} ${currentThreadInfo()} -- Network API getEntries($description) start")
-        retrofitWebserviceApi.getEntries(description)
+        retrofitWebserviceApi.getEntries(description).execute()
         println("${currentTime()} ${currentThreadInfo()} -- Network API getEntries($description) end")
     }
 
@@ -26,7 +24,7 @@ internal class NetworkApi(
      */
     suspend fun getCategories() = withContext(dispatcher) {
         println("${currentTime()} ${currentThreadInfo()} -- Network API getCategories() start")
-        retrofitWebserviceApi.getCategories()
+        retrofitWebserviceApi.getCategories().execute()
         println("${currentTime()} ${currentThreadInfo()} -- Network API getCategories() end")
     }
 }

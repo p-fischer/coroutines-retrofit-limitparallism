@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -11,11 +12,11 @@ import retrofit2.http.Query
 internal interface RetrofitWebserviceApi {
 
     @GET("entries")
-    suspend fun getEntries(@Query("description") description: String): EntriesResponse
+    fun getEntries(@Query("description") description: String): Call<EntriesResponse>
 
     @GET("categories")
-    suspend fun getCategories(
-    ): CategoriesResponse
+    fun getCategories(
+    ): Call<CategoriesResponse>
 }
 
 @Serializable
