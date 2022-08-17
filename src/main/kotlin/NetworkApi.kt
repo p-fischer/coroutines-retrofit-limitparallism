@@ -2,6 +2,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Call
+import retrofit2.HttpException
 
 internal class NetworkApi(
     private val retrofitWebserviceApi: RetrofitWebserviceApi,
@@ -24,11 +25,16 @@ internal class NetworkApi(
     suspend fun getCategories() =
         retrofitWebserviceApi.getCategories().executeWithDispatcher(dispatcher, "getCategories()")
 
-    private suspend fun <T> Call<T>.executeWithDispatcher(dispatcher: CoroutineDispatcher, operationName: String) =
+    private suspend fun <T> Call<T>.executeWithDispatcher(dispatcher: CoroutineDispatcher, operationName: String): T =
         withContext(dispatcher)
         {
             println("${currentTime()} ${currentThreadInfo()} -- Network API $operationName start")
-            execute()
+            val response = execute()
             println("${currentTime()} ${currentThreadInfo()} -- Network API $operationName end")
+            if (response.isSuccessful) {
+                checkNotNull(response.body())
+            } else {
+                throw HttpException(response)
+            }
         }
 }
