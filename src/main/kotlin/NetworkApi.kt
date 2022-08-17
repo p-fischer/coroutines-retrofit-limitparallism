@@ -1,6 +1,7 @@
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.Call
 
 internal class NetworkApi(
     private val retrofitWebserviceApi: RetrofitWebserviceApi,
@@ -13,18 +14,21 @@ internal class NetworkApi(
      * Represents an endpoint, which needs to be called with a lot of different parameters at the same time (about 1000 times).
      * It's important these calls don't block the whole thread pool.
      */
-    suspend fun getEntries(description: String) = withContext(noParallelismDispatcher) {
-        println("${currentTime()} ${currentThreadInfo()} -- Network API getEntries($description) start")
-        retrofitWebserviceApi.getEntries(description).execute()
-        println("${currentTime()} ${currentThreadInfo()} -- Network API getEntries($description) end")
-    }
+    suspend fun getEntries(description: String) =
+        retrofitWebserviceApi.getEntries(description)
+            .executeWithDispatcher(noParallelismDispatcher, "getEntries($description)")
 
     /**
      * This call should not be blocked by [getEntries] calls, but be executed shortly after it is called.
      */
-    suspend fun getCategories() = withContext(dispatcher) {
-        println("${currentTime()} ${currentThreadInfo()} -- Network API getCategories() start")
-        retrofitWebserviceApi.getCategories().execute()
-        println("${currentTime()} ${currentThreadInfo()} -- Network API getCategories() end")
-    }
+    suspend fun getCategories() =
+        retrofitWebserviceApi.getCategories().executeWithDispatcher(dispatcher, "getCategories()")
+
+    private suspend fun <T> Call<T>.executeWithDispatcher(dispatcher: CoroutineDispatcher, operationName: String) =
+        withContext(dispatcher)
+        {
+            println("${currentTime()} ${currentThreadInfo()} -- Network API $operationName start")
+            execute()
+            println("${currentTime()} ${currentThreadInfo()} -- Network API $operationName end")
+        }
 }
